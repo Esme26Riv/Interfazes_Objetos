@@ -1,0 +1,253 @@
+/****************Interfaces****************/
+
+interface Usable {
+    fun usar(): String
+}
+
+interface Lavable {
+    fun lavar(): String
+}
+
+interface Comestible {
+    fun comer(): String
+}
+
+
+/*******************Objetos**********************/
+
+class Juguete(val nombre: String) : Usable {
+    override fun usar(): String {
+        return "El bebé juega con $nombre"
+    }
+}
+
+class Ropa(val tipo: String) : Lavable {
+    override fun lavar(): String {
+        return "La $tipo del bebé está limpia y huele rico"
+    }
+}
+
+class Biberon(val contenido: String) : Comestible {
+    override fun comer(): String {
+        return "El bebé toma $contenido del biberón"
+    }
+}
+
+/****************************************************************/
+enum class EstadosBebes {
+    despierto,
+    llorando,
+    dormido,
+    comiendo,
+    cagado_y_miado,
+    viendo_paw_patrol,
+    tieso,
+    jugando,
+    enfermo,
+    enojado,
+    riendo,
+    bañandose
+}
+
+class Bebe(
+    var nombre: String,
+    var hambre: Int,
+    var pañal_lleno: Int,
+    var sueño: Int,
+    var estado: EstadosBebes = EstadosBebes.despierto,
+    var juguete: Juguete,
+    var ropa: Ropa,
+    var biberon: Biberon
+) {
+
+    fun alimentar() {
+        if (estado == EstadosBebes.tieso) {
+            println("No puedes alimentar a $nombre, ya está tieso.")
+            return
+        }
+        estado = EstadosBebes.comiendo
+    }
+
+    fun dormir() {
+        if (estado == EstadosBebes.tieso) {
+            println("$nombre ya está tieso, no puede dormir.")
+            return
+        }
+        if ((estado == EstadosBebes.despierto || estado == EstadosBebes.comiendo) && sueño > 49) {
+            sueño = 0
+            estado = EstadosBebes.dormido
+        }
+    }
+
+    fun despertar() {
+        if (estado == EstadosBebes.dormido) {
+            estado = EstadosBebes.despierto
+        }
+    }
+
+    fun despertar_con_agua() {
+        if (estado == EstadosBebes.dormido) {
+            estado = EstadosBebes.tieso
+        }
+    }
+
+    fun jugar() {
+        if (estado != EstadosBebes.tieso && estado != EstadosBebes.dormido) {
+            estado = EstadosBebes.jugando
+        }
+    }
+
+    fun enfermar() {
+        if (estado != EstadosBebes.tieso) {
+            estado = EstadosBebes.enfermo
+        }
+    }
+
+    fun enojar() {
+        if (estado != EstadosBebes.tieso) {
+            estado = EstadosBebes.enojado
+        }
+    }
+
+    fun reir() {
+        if (estado != EstadosBebes.tieso) {
+            estado = EstadosBebes.riendo
+        }
+    }
+
+    fun banar() {
+        if (estado != EstadosBebes.tieso) {
+            estado = EstadosBebes.bañandose
+        }
+    }
+
+    fun actualizar_estado() {
+        when (estado) {
+            EstadosBebes.despierto -> {
+                sueño += 5
+                hambre += 5
+                pañal_lleno += 3
+            }
+
+            EstadosBebes.comiendo -> {
+                hambre -= 40
+            }
+
+            else -> {}
+        }
+    }
+
+    fun estado_actual(): String {
+        return when (estado) {
+            EstadosBebes.despierto -> "El bebé está despierto"
+            EstadosBebes.tieso -> "El bebé está muerto"
+            EstadosBebes.dormido -> "Está dormidito"
+            EstadosBebes.comiendo -> "Estoy alimentándome para ser grande y fuerte"
+            EstadosBebes.jugando -> "El bebé está jugando con sus juguetes"
+            EstadosBebes.enfermo -> "El bebé está enfermo, necesita un médico"
+            EstadosBebes.enojado -> "El bebé está de berrinchudo"
+            EstadosBebes.riendo -> "El bebé se está cagando de risa"
+            EstadosBebes.bañandose -> "El bebé está en la ducha"
+            else -> "No identifico el estado"
+        }
+    }
+}
+
+/*************************************************************************/
+enum class EstadoNiño {
+    ojos_abiertos,
+    en_la_escuela,
+    haciendo_tarea,
+    jugando_videojuegos,
+    castigado,
+    ojos_cerrados
+}
+
+class Niño(
+    var nombre: String,
+    var estado_niño: EstadoNiño = EstadoNiño.ojos_abiertos
+) {
+    fun irALaEscuela() {
+        estado_niño = EstadoNiño.en_la_escuela
+    }
+
+    fun hacerTarea() {
+        if (estado_niño == EstadoNiño.en_la_escuela || estado_niño == EstadoNiño.ojos_abiertos) {
+            estado_niño = EstadoNiño.haciendo_tarea
+        }
+    }
+
+    fun jugarVideojuegos() {
+        if (estado_niño != EstadoNiño.castigado) {
+            estado_niño = EstadoNiño.jugando_videojuegos
+        }
+    }
+
+    fun castigar() {
+        estado_niño = EstadoNiño.castigado
+    }
+
+    fun DormirNiNo() {
+        estado_niño = EstadoNiño.ojos_cerrados
+    }
+
+    fun estado_actual_niño(): String {
+        return when (estado_niño) {
+            EstadoNiño.ojos_abiertos -> "El niño está despierto"
+            EstadoNiño.en_la_escuela -> "El niño está en la escuela"
+            EstadoNiño.haciendo_tarea -> "El niño está haciendo tarea"
+            EstadoNiño.jugando_videojuegos -> "El niño está jugando videojuegos"
+            EstadoNiño.castigado -> "El niño está castigado"
+            EstadoNiño.ojos_cerrados -> "El niño está dormido"
+        }
+    }
+}
+
+/*************************************************************************/
+fun main() {
+    val JackieShieras = Bebe(
+        "Jackie Shieras", 
+        50, 10, 70,
+        juguete = Juguete("osito de peluche"),
+        ropa = Ropa("mameluco"),
+        biberon = Biberon("leche")
+    )
+
+    JackieShieras.actualizar_estado()
+    println(JackieShieras.estado_actual())
+    JackieShieras.dormir()
+    println(JackieShieras.estado_actual())
+    JackieShieras.despertar_con_agua()
+    println(JackieShieras.estado_actual())
+    JackieShieras.alimentar()
+    println(JackieShieras.estado_actual())
+    JackieShieras.jugar()
+    println(JackieShieras.estado_actual())
+    JackieShieras.enfermar()
+    println(JackieShieras.estado_actual())
+    JackieShieras.enojar()
+    println(JackieShieras.estado_actual())
+    JackieShieras.reir()
+    println(JackieShieras.estado_actual())
+    JackieShieras.banar()
+    println(JackieShieras.estado_actual())
+
+    println("\n--- Ahora un niño ---")
+    val ArchiLavi = Niño("Archi Lavi")
+    println(ArchiLavi.estado_actual_niño())
+    ArchiLavi.irALaEscuela()
+    println(ArchiLavi.estado_actual_niño())
+    ArchiLavi.hacerTarea()
+    println(ArchiLavi.estado_actual_niño())
+    ArchiLavi.jugarVideojuegos()
+    println(ArchiLavi.estado_actual_niño())
+    ArchiLavi.castigar()
+    println(ArchiLavi.estado_actual_niño())
+    ArchiLavi.DormirNiNo()
+    println(ArchiLavi.estado_actual_niño())
+    
+    println("\n--- Interfaces y objetos (con composición en bebé) ---")
+    println(JackieShieras.juguete.usar())
+    println(JackieShieras.ropa.lavar())
+    println(JackieShieras.biberon.comer())
+}
